@@ -1,6 +1,7 @@
 # To Run: conda env create -f environment.yml
-name: musicautobot
+name: musicautobot-m1
 channels:
+- conda-forge
 - fastai
 - pytorch
 - defaults
