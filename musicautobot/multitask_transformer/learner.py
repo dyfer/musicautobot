@@ -80,7 +80,8 @@ class MultitaskLearner(Learner):
             # Filter
             # bar = 16 beats
             filter_value = -float('Inf')
-            if ((last_pos - start_pos) // 16) <= min_bars: logits[vocab.bos_idx] = filter_value
+            # if ((last_pos - start_pos) // 16) <= min_bars: logits[vocab.bos_idx] = filter_value
+            if (torch.div((last_pos - start_pos), 16, rounding_mode='floor')) <= min_bars: logits[vocab.bos_idx] = filter_value
 
             logits = filter_invalid_indexes(logits, prev_idx, vocab, filter_value=filter_value)
             logits = top_k_top_p(logits, top_k=top_k, top_p=top_p, filter_value=filter_value)
@@ -98,8 +99,10 @@ class MultitaskLearner(Learner):
                 duration = idx - vocab.dur_range[0]
                 last_pos = last_pos + duration
 
-                bars_pred = (last_pos - start_pos) // 16
-                abs_bar = last_pos // 16
+                # bars_pred = (last_pos - start_pos) // 16
+                bars_pred = torch.div((last_pos - start_pos), 16, rounding_mode='floor')
+                # abs_bar = last_pos // 16
+                abs_bar = torch.div(last_pos, 16, rounding_mode='floor')
                 # if (bars % 8 == 0) and (bars_pred > min_bars): break
                 if (i / n_words > 0.80) and (abs_bar % 4 == 0): break
 
